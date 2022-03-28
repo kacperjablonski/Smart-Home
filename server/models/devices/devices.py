@@ -13,10 +13,6 @@ class Device:
 
     def change_status(self):
         self.status = not self.status
-        
 
     def get_id(self):
         self.id = next(self.new_id)
-
-
-

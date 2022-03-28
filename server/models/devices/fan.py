@@ -1,5 +1,6 @@
 from models.devices.devices import Device
 
+
 class Fan(Device):
     name = 'Fan'
 
