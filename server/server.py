@@ -84,10 +84,6 @@ APARMENTS = [
     mk, ob
 ]
 
-# Endpoint : Lista mieszkań =< GET
-# Endpoint : Stworz mieszkanie =< POST
-# localhost:5002
-# localhost:5003
 devices_address_range = [
     'http://localhost:5005']
 
