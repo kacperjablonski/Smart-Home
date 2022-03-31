@@ -8,6 +8,7 @@ class Device:
         self.id = None
         self.name = name
         self.status = False
+        
 
     def change_status(self):
         if self.status:

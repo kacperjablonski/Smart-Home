@@ -25,12 +25,12 @@ class Finder(Resource):
 class AddDevice(Resource):
     def get(self, id):
         fan_1.id = id
-        return "Dodano wiatrak"
+        return 'git malina'
 
 
 class GetNameAndType(Resource):
     def get(self):
-        return [fan_1.name, fan_1.type]
+        return [fan_1.name, fan_1.type,list(fan_1.method.keys())]
 
 
 api.add_resource(AddDevice, '/<id>')

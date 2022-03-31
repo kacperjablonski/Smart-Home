@@ -5,10 +5,13 @@ avinable_color = ['white', 'green', 'red', 'blue', 'yellow']
 
 class Light(Device):
     def __init__(self, name):
+        Device.__init__(self, name)
         self.power_light = 0
         self.color = 'white'
         self.type = 'light'
-        Device.__init__(self, name)
+        self.method = {'on/off': self.change_status,
+                        'zmień moc': self.give_me_more_power,
+                        'kolor': self.change_color}
 
     def change_status(self):
         super().change_status()
