@@ -28,14 +28,14 @@ class ManagerDevices():
             'light': self.light
         }
 
-    def __call__(self, device, name,method,address):
-        return self.operation[device](name,method,address)
+    def __call__(self, device, name,address):
+        return self.operation[device](name,address)
 
-    def fan(self, name,method,address):
-        return Fan(name,method, address)
+    def fan(self, name,address):
+        return Fan(name, address)
 
-    def light(self, name,method,address):
-        return Light(name,method ,address)
+    def light(self, name,address):
+        return Light(name,address)
 
 
 class Device():
@@ -54,8 +54,8 @@ class Device():
     def create_new_devise(self, address):
         self.address = address
         resp = requests.get(f'{self.address}/nameandtype').json()
-        obj_name, obj_type, obj_method = resp
-        self.add_devices = manager(obj_type, obj_name, obj_method, self.address)
+        obj_name, obj_type = resp
+        self.add_devices = manager(obj_type, obj_name, self.address)
 
     def find_devices_to_apartment_room(self,chosen):
         self.apartment = self.find_apartment_by_name(chosen['apartment'])
@@ -111,6 +111,8 @@ parser.add_argument('apartment')
 parser.add_argument("room")
 parser.add_argument("device")
 
+
+
 def convert ():
     ready_to_convertet = []
     ready_to_convertet.append(mk)
@@ -132,11 +134,12 @@ class GetList(Resource):
     def get(self):
         return convert()
 
-
-class UserChoise(Resource):
+class GetMethod(Resource):
     def get(self):
-        args = parser.parse_args()
-        response = device.chose_method_to_use(args)
+        parseraddress = reqparse.RequestParser()
+        parseraddress.add_argument('address')
+        args  = parseraddress.parse_args()
+        response =requests.get(f"{args['address']}/method").json()
         return response
 
 class CheckDevice(Resource):
@@ -145,10 +148,18 @@ class CheckDevice(Resource):
         return  verify
             
 
-
 class AddList(Resource):
     def get(self):
         return convert()
+
+# class UseMethod(Resource):
+#     def get(self):
+#         parseraddress = reqparse.RequestParser()
+#         parseraddress.add_argument('address')
+#         parseraddress.add_argument('method')
+#         args  = parseraddress.parse_args()
+#         response = requests.get(f"{args['address']}/usemethod/{args['method']}")
+#         return response
 
 
 class CreateDevice(Resource):
@@ -157,8 +168,8 @@ class CreateDevice(Resource):
         response = device.add_devices_to_apartment_and_room(args)
         return response
 
-
-api.add_resource(UserChoise, '/')
+#api.add_resource(UseMethod, '/usemethod/<address>/<method>')
+api.add_resource(GetMethod, '/getmethod')
 api.add_resource(GetList, '/list')
 api.add_resource(AddList, '/addlist')
 api.add_resource(CheckDevice, '/checkdevice')

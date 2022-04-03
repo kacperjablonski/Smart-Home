@@ -11,6 +11,16 @@ class Fan(Device):
                         'zmień moc': self.give_me_more_power,
                         'rotacja': self.change_rotation}
 
+    @property
+    def get_method(self):
+        method ={'on/off': self.status,
+                'zmień moc': self.power_willmill,
+                'rotacja': self.rotation}
+        return method
+
+    def __call__(self,method,power= None):
+        return self.method[method](power)
+
     def change_status(self):
         super().change_status()
         if self.status:
@@ -31,3 +41,5 @@ class Fan(Device):
         else:
             self.rotation = True
             return 'Włączam obracanie'
+
+    
