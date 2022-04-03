@@ -2,83 +2,106 @@ import requests
 import json
 from json import JSONEncoder
 
+ADDRESS = 'http://localhost:8080'
+HEADERS = {"Content-type": "application/json"}
 
 
-def print_chose(list):
-    for nr, name in enumerate(list):
-        print(nr, name['name'])
+def get_user_select(data):
+    print([f"{i}. {s['name']}" for i, s in enumerate(data)])
+    select = data[int(input())]
+    return select
 
-
-def get_chose(list):
-    chose = input()
-    return list[int(chose)]
-
+def method_and_status(data):
+    keys= {}
+    for i, key in enumerate (data) :
+        print(f"{i}. {key} status: {data[key]}")
+        keys = { i : keys}
+    select = data[keys[int(input())]]
+    return select    
 
 def new_device():
-    response = requests.get('http://localhost:8080/checkdevice').json()
-    return response
-
+    return requests.get(f'{ADDRESS}/checkdevice').json()
 
 def add_device():
     url = {}
 
     print("Wykryto nowe urządzenie ")
-    resp = requests.get('http://localhost:8080/addlist').json()
-
-    list_response = json.loads(resp)
-    print("Wybierz gdzie znajduje sie urządzenie")
+    list_response = json.loads(requests.get('http://localhost:8080/addlist').json())
+    print("Wybierz gdzie znajduje sie urządzenie:")
     print('Wybierz mieszkanie')
-    print_chose(list_response)
-
-    chose_apartment = get_chose(list_response)
-    rooms = chose_apartment['rooms']
+    selected_apartment = get_user_select(list_response)
 
     print('Wybierz pokój')
-    print_chose(rooms)
+    selected_room = get_user_select(selected_apartment['rooms'])
 
-    chose_room = get_chose(rooms)
-    
-    url['room'] = chose_room['name']
-    url['apartment'] = chose_apartment['name']
-    
-    response = requests.get('http://localhost:8080/create', url).json()
+    url = {'room': selected_room['name'],
+           'apartment': selected_apartment['name'] 
+           }
+
+
+    response = requests.get(f'{ADDRESS}/create', url).json()
     print(response)
 
 
 def menu_method():
     url = {}
 
-    response = requests.get('http://localhost:8080/apartments').json()
+    response = requests.get(f'{ADDRESS}/list').json()
     data_response = json.loads(response)
 
     print("Wybierz mieszkanie")
-    print_chose(data_response)
-
-    chose_apartment = get_chose(data_response)
-    rooms = chose_apartment['rooms']
+    selected = get_user_select(data_response)
 
     print("Wybierz pokój")
-    print_chose(rooms)
-
-    chose_room = get_chose(rooms)
-    devices = chose_room['devices']
+    selected = get_user_select(selected['rooms'])
 
     print("Wybierz Urządzenie")
-    print_chose(devices)
+    device = get_user_select(selected['devices'])
+    
+    url= {'address': device['address']}
+    response =json.loads(requests.get(f"{ADDRESS}/getmethod",url).json()  )
+    method = method_and_status(response)
+    url['method'] = method
+    response = requests.get(f"{ADDRESS}/usemethod/",url).json()
+    print (response)
 
-    chose_device = get_chose(devices)
-
-    url['device'] = chose_device['name']
-    url['room'] = chose_room['name']
-    url['apartment'] = chose_apartment['name']
-
-    print(url)
-
-    response = requests.get('http://localhost:8080/', url).json()
-    print(response)
+while True:
+    if new_device():
+        add_device()
+    else:
+        menu_method()
 
 
-if new_device():
-    add_device()
-else:
-    menu_method()
+
+[
+    {
+        "name": "Mieszkanie Kacpra",
+        "rooms": [
+            {
+                "name": "Kuchnia",
+                "devices": []
+            },
+            {
+                "name": "Sypialnia",
+                "devices": []
+            }
+        ]
+    },
+    {
+        "name": "Burdel Oskara",
+        "rooms": [
+            {
+                "name": "BDSM ROOM",
+                "devices": []
+            },
+            {
+                "name": "FISTING ROOM",
+                "devices": []
+            },
+            {
+                "name": "Kuchnia",
+                "devices": []
+            }
+        ]
+    }
+]

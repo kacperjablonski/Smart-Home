@@ -3,10 +3,23 @@ from models.device import Device
 
 class Fan(Device):
     def __init__(self, name):
+        Device.__init__(self, name)
         self.power_willmill = 0
         self.type = 'fan'
         self.rotation = False
-        Device.__init__(self, name)
+        self.method = {'on/off': self.change_status,
+                        'zmień moc': self.give_me_more_power,
+                        'rotacja': self.change_rotation}
+
+    @property
+    def get_method(self):
+        method ={'on/off': self.status,
+                'zmień moc': self.power_willmill,
+                'rotacja': self.rotation}
+        return method
+
+    def __call__(self,method,power= None):
+        return self.method[method](power)
 
     def change_status(self):
         super().change_status()
@@ -28,3 +41,5 @@ class Fan(Device):
         else:
             self.rotation = True
             return 'Włączam obracanie'
+
+    
