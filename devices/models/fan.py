@@ -18,8 +18,8 @@ class Fan(Device):
                 'rotacja': self.rotation}
         return method
 
-    def __call__(self,method,power= None):
-        return self.method[method](power)
+    def __call__(self,chose_method):
+        return self.method[chose_method]()
 
     def change_status(self):
         super().change_status()
@@ -28,6 +28,7 @@ class Fan(Device):
             return 'Włączono wiatrak'
         else:
             self.power_willmill = 0
+            self.rotation = False
             return 'Wyłączono wiatrak'
 
     def give_me_more_power(self, power):
@@ -42,4 +43,3 @@ class Fan(Device):
             self.rotation = True
             return 'Włączam obracanie'
 
-    

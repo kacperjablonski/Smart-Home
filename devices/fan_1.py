@@ -1,5 +1,5 @@
-from flask import Flask, render_template, make_response, request, jsonify, Response
-from flask_restful import Resource, Api, marshal_with, reqparse,  fields
+from flask import Flask
+from flask_restful import Resource, Api, reqparse
 import json
 import requests
 
@@ -10,15 +10,7 @@ HEADERS = {"Content-type": "application/json"}
 app = Flask(__name__)
 api = Api(app)
 
-light_1 = Light('Lampka-nocna')
-light_2 = Light('Lampka-ścienna')
-light_3 = Light('Oświeglenie-górne')
 fan_1 = Fan('wiatrak-w-salonie')
-fan_2 = Fan('wiatrak-w-Kuchni')
-
-print(type(fan_1.get_method))
-
-
 class Finder(Resource):
     def get(self):
         return fan_1.id
@@ -34,20 +26,26 @@ class GetNameAndType(Resource):
     def get(self):
         return [fan_1.name, fan_1.type]
 
+
 class GetMethod(Resource):
     def get(self):
         dict_method = fan_1.get_method
         message = json.dumps(dict_method)
         return message
 
-class UseMethod(Resource):
-    def get(self,method):
-        return fan_1(method)
 
-api.add_resource(UseMethod,'/usemethod/<method>')       
+class UseMethod(Resource):
+    def get(self):
+        parsermethod = reqparse.RequestParser()
+        parsermethod.add_argument('method')
+        method = parsermethod.parse_args()
+        return fan_1(method['method'])
+
+
+api.add_resource(UseMethod, '/usemethod')
 api.add_resource(AddDevice, '/<id>')
 api.add_resource(Finder, '/')
 api.add_resource(GetNameAndType, "/nameandtype")
-api.add_resource(GetMethod,"/method")
+api.add_resource(GetMethod, "/method")
 if __name__ == '__main__':
     app.run(debug=True, port=5005)

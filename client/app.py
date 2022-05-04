@@ -11,66 +11,67 @@ def get_user_select(data):
     select = data[int(input())]
     return select
 
+
 def method_and_status(data):
-    keys= {}
-    for i, key in enumerate (data) :
+    keys = {}
+    keys[10] = 'exit'
+    for i, key in enumerate(data):
         print(f"{i}. {key} status: {data[key]}")
-        keys = { i : keys}
-    select = data[keys[int(input())]]
-    return select    
+        keys[i] = key
+    print('10 jeśli skończyłeś')
+    select_method = keys[int(input())]
+    return select_method
+
 
 def new_device():
-    return requests.get(f'{ADDRESS}/checkdevice').json()
+    return requests.get(f'{ADDRESS}/verify').json()
+
 
 def add_device():
-    url = {}
 
     print("Wykryto nowe urządzenie ")
-    list_response = json.loads(requests.get('http://localhost:8080/addlist').json())
+    apartment_list = json.loads(requests.get(f'{ADDRESS}/getapartment').json())
     print("Wybierz gdzie znajduje sie urządzenie:")
     print('Wybierz mieszkanie')
-    selected_apartment = get_user_select(list_response)
-
+    selected_apartment = get_user_select(apartment_list)
+    rooms_list = json.loads(requests.get(
+        f'{ADDRESS}/getrooms', selected_apartment).json())
     print('Wybierz pokój')
-    selected_room = get_user_select(selected_apartment['rooms'])
-
-    url = {'room': selected_room['name'],
-           'apartment': selected_apartment['name'] 
-           }
-
-
-    response = requests.get(f'{ADDRESS}/create', url).json()
+    selected_room = get_user_select(rooms_list)
+    response = requests.get(f'{ADDRESS}/create', selected_room).json()
     print(response)
 
 
 def menu_method():
     url = {}
-
-    response = requests.get(f'{ADDRESS}/list').json()
-    data_response = json.loads(response)
-
-    print("Wybierz mieszkanie")
-    selected = get_user_select(data_response)
-
-    print("Wybierz pokój")
-    selected = get_user_select(selected['rooms'])
-
+    apartment_list = json.loads(requests.get(f'{ADDRESS}/getapartment').json())
+    print('Wybierz mieszkanie')
+    selected_apartment = get_user_select(apartment_list)
+    rooms_list = json.loads(requests.get(
+        f'{ADDRESS}/getrooms', selected_apartment).json())
+    print('Wybierz pokój')
+    selected_room = get_user_select(rooms_list)
+    device_list = json.loads(requests.get(
+        f'{ADDRESS}/getdevice', selected_room).json())
     print("Wybierz Urządzenie")
-    device = get_user_select(selected['devices'])
-    
-    url= {'address': device['address']}
-    response =json.loads(requests.get(f"{ADDRESS}/getmethod",url).json()  )
-    method = method_and_status(response)
-    url['method'] = method
-    response = requests.get(f"{ADDRESS}/usemethod/",url).json()
-    print (response)
+    selected_device = get_user_select(device_list)
+    while True:
+        response = json.loads(requests.get(
+            f"{ADDRESS}/getmethod", selected_device).json())
+        method = method_and_status(response)
+        if method == 'exit':
+            break
+        url['address']= selected_device['address']
+        url['method'] = method
+        response = requests.get(f"{ADDRESS}/usemethod", url).json()
+        print(response)
+
 
 while True:
     if new_device():
         add_device()
     else:
         menu_method()
-
 
 
 [
