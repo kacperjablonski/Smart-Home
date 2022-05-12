@@ -14,4 +14,4 @@ The user has the possibility to select the flat of the device room and the optio
 
 
 <h2>Setup</h2>
-
+opis dokera jak odpalic apke 
