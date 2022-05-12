@@ -7,11 +7,7 @@ class Device:
     def __init__(self, name):
         self.id = None
         self.name = name
-        self.status = False
+        self.state = False
         
 
-    def change_status(self):
-        if self.status:
-            self.status = False
-        else:
-            self.status = True
+  

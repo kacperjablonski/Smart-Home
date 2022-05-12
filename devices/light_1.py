@@ -13,7 +13,7 @@ api = Api(app)
 light_1 = Light('lampa-w-salonie')
 
 
-class Finder(Resource):
+class GetId(Resource):
     def get(self):
         return light_1.id
 
@@ -24,29 +24,27 @@ class AddDevice(Resource):
         return 'git malina'
 
 
-class GetNameAndType(Resource):
+class GetNameAndTypeDevice(Resource):
     def get(self):
         return [light_1.name, light_1.type]
 
 
-class GetMethod(Resource):
+class GetDeviceState(Resource):
     def get(self):
-        dict_method = light_1.get_method
-        message = json.dumps(dict_method)
-        return message
+        return (light_1.state, light_1.color, light_1.power_light)
 
 
-class UseMethod(Resource):
+class DeviceAction(Resource):
     def get(self):
-        parseraddress = reqparse.RequestParser()
-        parseraddress.add_argument('method')
-        method = parseraddress.parse_args()
+        parser_address = reqparse.RequestParser()
+        parser_address.add_argument('method')
+        method = parser_address.parse_args()
         return light_1(method['method'])
 
-api.add_resource(UseMethod, '/usemethod')
+api.add_resource(DeviceAction, '/device_action')
 api.add_resource(AddDevice, '/<id>')
-api.add_resource(Finder, '/')
-api.add_resource(GetNameAndType, "/nameandtype")
-api.add_resource(GetMethod, "/method")
+api.add_resource(GetId, '/')
+api.add_resource(GetNameAndTypeDevice, "/name_and_type")
+api.add_resource(GetDeviceState, "/get_device_state")
 if __name__ == '__main__':
     app.run(debug=True, port=5004)
