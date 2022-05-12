@@ -11,3 +11,7 @@ The server also reads flats, rooms and devices from the database.<br>
 It verifies whether a device that is in the database is active or not if it does not display this device to the user.<br>
 Flats and rooms are already entered in the database and the user cannot add new flats or rooms.<br>
 The user has the possibility to select the flat of the device room and the option to execute a given device, e.g. switch on or switch off.<br>
+
+
+<h2>Setup</h2>
+
