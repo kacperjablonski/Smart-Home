@@ -1,4 +1,4 @@
-<h1>Smart Home</h1><br>
+<h1>Smart Home</h1>
 This is my first big project in python. The assumption is to make it a REST API 
 <h2>Project Description</h2>
 The project consists of a client application, a server application and individual devices.<br>
