@@ -15,7 +15,7 @@ class Light(Device):
 
     @property
     def get_option(self) -> dict:
-        available_options = {'on/off': self.status,
+        available_options = {'on/off': self.state,
                              'zmień moc': self.power_light,
                              'rotacja': self.color}
         return available_options
@@ -25,7 +25,7 @@ class Light(Device):
 
     def change_state(self) -> str:
         super().change_state()
-        if self.status:
+        if self.state:
             self.power_light = 1
             return 'Włączono lampę'
         else:

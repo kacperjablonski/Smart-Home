@@ -14,7 +14,7 @@ class Fan(Device):
 
     @property
     def get_option(self) -> dict:
-        available_options = {'on/off': self.status,
+        available_options = {'on/off': self.state,
                   'zmień moc': self.fan_power,
                   'rotacja': self.rotation}
         return available_options
