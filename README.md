@@ -13,5 +13,3 @@ Flats and rooms are already entered in the database and the user cannot add new 
 The user has the possibility to select the flat of the device room and the option to execute a given device, e.g. switch on or switch off.<br>
 
 
-<h2>Setup</h2>
-opis dokera jak odpalic apke 
