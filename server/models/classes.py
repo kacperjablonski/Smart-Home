@@ -33,6 +33,25 @@ class Apartment:
             self.create_room(room[0])
 
 
+
+class Room:
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.devices = []
+
+    
+    def create_device(self, address, id, name, type_device) -> None:
+        self.devices.append(Device(address, id, name, type_device))
+
+    def load_devices(self, list_address_response: list) -> None:
+        device_data = Database.make_query(
+            Query.select_device_from_room(), self.name)
+        for device in device_data:
+            if device[0] in list_address_response:
+                self.create_device(
+                    device[0], device[1], device[2], device[3])
+
+
 class Device:
     
     def __init__(self, address: str = None, id: int = None, name: str = None, type_device: str = None, available_options: dict = None,state: bool =None) -> None:
@@ -40,8 +59,7 @@ class Device:
         self.name = name
         self.address = address
         self.type_device = type_device
-        self.available_options = available_options
-        self.state= state
+       
 
     def check_in_database_device_exist(self):
         resp = requests.get(f'{self.address}/name_and_type').json()
@@ -69,19 +87,3 @@ class Device:
             self.state = True
 
 
-class Room:
-    def __init__(self, name: str) -> None:
-        self.name = name
-        self.devices = []
-
-    
-    def create_device(self, address, id, name, type_device) -> None:
-        self.devices.append(Device(address, id, name, type_device))
-
-    def load_devices(self, list_address_response: list) -> None:
-        device_data = Database.make_query(
-            Query.select_device_from_room(), self.name)
-        for device in device_data:
-            if device[0] in list_address_response:
-                self.create_device(
-                    device[0], device[1], device[2], device[3])

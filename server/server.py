@@ -76,6 +76,12 @@ class VerifyDevice(Resource):
                 continue
         return False
 
+class CreateDevice(Resource):
+    def get(self):
+        args = parser_add.parse_args()
+        room = Room(args['name'])
+        general.device.add_device_to_database(general.apartment.name, room.name)
+        return 'dodano urzadzenie'
 
 class ApratmentGet(Resource):
     def get(self):
@@ -113,20 +119,14 @@ class UseDeviceOptions(Resource):
         return response
 
 
-class CreateDevice(Resource):
-    def get(self):
-        args = parser_add.parse_args()
-        room = Room(args['name'])
-        general.device.add_device_to_database(general.apartment.name, room.name)
-        return 'dodano urzadzenie'
 
-
+api.add_resource(VerifyDevice, '/verify')
+api.add_resource(CreateDevice, '/create')
 api.add_resource(ApratmentGet, '/get_apartment')
 api.add_resource(RoomGet, '/get_rooms')
 api.add_resource(DeviceGet, '/get_device')
-api.add_resource(UseDeviceOptions, '/use_method')
 api.add_resource(GetDeviceOptions, '/get_device_options')
-api.add_resource(CreateDevice, '/create')
-api.add_resource(VerifyDevice, '/verify')
+api.add_resource(UseDeviceOptions, '/use_method')
+
 if __name__ == '__main__':
     app.run(debug=True, port=8080)

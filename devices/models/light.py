@@ -10,12 +10,12 @@ class Light(Device):
         self.color = 'white'
         self.type = 'light'
         self.available_options = {'on/off': self.change_state,
-                                  'zmień moc': self.give_me_more_power,
+                                  'zmień moc': self.change_light_power,
                                   'kolor': self.change_color}
 
     @property
     def get_option(self) -> dict:
-        available_options = {'on/off': self.status,
+        available_options = {'on/off': self.state,
                              'zmień moc': self.power_light,
                              'rotacja': self.color}
         return available_options
@@ -25,14 +25,14 @@ class Light(Device):
 
     def change_state(self) -> str:
         super().change_state()
-        if self.status:
+        if self.state:
             self.power_light = 1
             return 'Włączono lampę'
         else:
             self.power_light = 0
             return "wyłączono lampę"
 
-    def give_me_more_power(self, power: int) -> str:
+    def change_light_power(self, power: int) -> str:
         self.power_light = power
         return f'zmieniono moc {power}'
 
@@ -41,3 +41,4 @@ class Light(Device):
             self.color = color
             return f'Zmieniono kolor na {color}'
         return f'Nie można zmienić koloru na {color}'
+

@@ -9,5 +9,7 @@ class Device:
         self.name = name
         self.state = False
         
+    def change_state(self):
+        self.state =  not self.state 
 
   

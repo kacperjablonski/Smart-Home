@@ -1,4 +1,3 @@
-from black import Dict
 from models.device import Device
 
 
@@ -9,14 +8,14 @@ class Fan(Device):
         self.type = 'fan'
         self.rotation = False
         self.available_options = {'on/off': self.change_state,
-                       'zmień moc': self.give_me_more_power,
-                       'rotacja': self.change_rotation}
+                                  'zmień moc': self.give_me_more_power,
+                                  'rotacja': self.change_rotation}
 
     @property
     def get_option(self) -> dict:
-        available_options = {'on/off': self.status,
-                  'zmień moc': self.fan_power,
-                  'rotacja': self.rotation}
+        available_options = {'on/off': self.state,
+                             'zmień moc': self.fan_power,
+                             'rotacja': self.rotation}
         return available_options
 
     def __call__(self, select_option: str):
@@ -24,9 +23,9 @@ class Fan(Device):
 
     def change_state(self) -> bool:
         super().change_state()
-        self.fan_power = 1 if self.status else 0
+        self.fan_power = 1 if self.state else 0
         self.rotation = False
-        return self.message(self.status, self.type)
+        return self.message(self.state, self.type)
 
     def give_me_more_power(self, power: int) -> str:
         self.fan_power = power
@@ -42,4 +41,3 @@ class Fan(Device):
 
     def message(self, state: bool, option: str):
         return f"{'Włączono' if state else 'Wyłączono'} {option}"
-
